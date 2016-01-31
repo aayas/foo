@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+#GUI for LIVESTREAMER
+
 import Tkinter
 from Tkinter import *
 import os
