@@ -1,0 +1,192 @@
+<html>
+<head>
+<script> 
+CURR="";
+window.onload=function(){
+	//alert('ready');
+
+	var cdiv=document.getElementById('content');
+	var mdiv=document.getElementById('media');
+	var str=document.getElementById('list').innerHTML;
+	m=document.body.innerHTML.match(/href=\"(.+?)\"/g);
+	//for(i=0;i<m.length;i++)console.log(/href=\"(.+?)\"/g.exec(m[i])[1])
+
+	//x=[];
+	//for(i=0;i<m.length;i++)x[i]=(/href=\"(.+?)\"/g.exec(m[i])[1]);
+	//document.body.innerHTML="";
+	//for(i=0;i<x.length;i++) document.body.innerHTML+="<div id='"+i+"'>"+x[i]+"</div>";
+	//res=x.sort();
+
+
+	//res=str.split('<br>').sort(function(a,b){return a.toLowerCase() > b.toLowerCase();});
+	res=str.split('<br>').sort();
+	make();
+	//console.log(res);
+	dox();
+	hide();
+	expand(1);
+};
+function make(){
+	var mx = document.createElement('div');
+	mx.setAttribute('id','menu');
+	mx.setAttribute("style","position: fixed;background-color: rgb(255, 255, 255);width: 75px; height: 100px; opacity: 0.8; font-size: large;");
+	var ar = document.createElement('a');
+	ar.setAttribute('href', "#d1");
+	ar.appendChild(document.createTextNode("pics"));
+	mx.appendChild(ar);
+	var br = document.createElement('a');
+	br.setAttribute('href', "#player");
+	br.appendChild(document.createTextNode("music"));
+	mx.appendChild(br);
+	document.body.appendChild(mx);
+
+	//<div id='player' style="width: 1000px; height:400px;">
+	var main=document.createElement('div');
+	main.setAttribute("align","center");
+
+	var player = document.createElement('div');
+	player.setAttribute('id','player');
+	player.setAttribute('style',"width: 1000px; height:400px;");
+	document.body.appendChild(player);
+
+	var media = document.createElement('div');
+	media.setAttribute('id','media');
+	media.setAttribute('style',"width: 1000px; height:130px;overflow: scroll;white-space: nowrap; overflow-y:hidden;");
+	var m1=document.createElement('div');
+	m1.setAttribute('id','m1');
+	media.appendChild(m1);
+	var sp1=document.createElement('div');
+	sp1.setAttribute('style','height:50%;');
+	//media.appendChild(sp1);
+	main.appendChild(media);
+	main.appendChild(sp1);
+
+	var d1 = document.createElement('div');
+	d1.setAttribute('id','d1');
+	d1.setAttribute('style',"width: 1000px; height:130px;overflow: scroll;white-space: nowrap; overflow-y:hidden;");
+	var content=document.createElement('div');
+	content.setAttribute('id','content');
+	content.setAttribute('style','width: 1000px; height:500px;overflow: scroll;white-space: nowrap;');
+
+	var p1=document.createElement('div');
+	p1.setAttribute('id','p1');
+	content.appendChild(p1);
+	
+	main.appendChild(d1);
+	main.appendChild(content);
+
+	var sp2=document.createElement('div');
+	sp2.setAttribute('style','height:50%;');
+	main.appendChild(sp2);
+
+	document.body.appendChild(main);
+
+}
+function hide(){
+	//$('#list').attr("style","display:none;");
+	document.getElementById('list').setAttribute("style","display:none;");
+}
+function dox(){
+	var xi=0,mi=0;
+	for(var i=0;i<res.length;i++){
+		if(res[i].match(/png|jpg|jpeg$/) != null){
+			var innerDiv = document.createElement('div');
+
+			innerDiv.setAttribute("style"," display: inline-block;/*float: left;*//*height: 100px;*/ max-height: 100px;width: 100px;max-width:110px;margin: 3;overflow: hidden; /* background-image: url(images.jpg); */word-wrap: break-word;border: 1px solid #AAEAAA;background-color: #C5F482;/* for sentence overflow */  white-space: pre-wrap;");
+
+
+			innerDiv.id='pic'+xi.toString();
+			xi++;
+			var xidiv=document.getElementById('p1'.toString());
+			var ht = "<img src='../N/"+res[i]+"'></img><br>";
+			innerDiv.innerHTML=ht;
+			innerDiv.setAttribute("onclick","window.location.href='../N/"+res[i]+"';");
+			innerDiv.setAttribute("onclick","javascript:expand("+(xi-1).toString()+");");
+			xidiv.appendChild(innerDiv);
+		}
+		if(res[i].match(/mp3|mp4|avi$/) != null){
+			var innerDiv = document.createElement('div');
+			innerDiv.setAttribute("style"," display: inline-table;/*float: left;*//*height: 100px;*/ max-height: 100px;width: 100px;max-width:110px;margin: 3;overflow: hidden; /* background-image: url(images.jpg); */word-wrap: break-word;border: 1px solid #AAEAAA;background-color: #C5F482;/* for sentence overflow */  white-space: pre-wrap;");
+
+			innerDiv.id='s'+mi.toString();
+			mi++;
+			var xmdiv=document.getElementById('m1'.toString());
+			innerDiv.innerHTML+="<br>"+res[i];
+			innerDiv.setAttribute("onclick","javascript:play('../S/"+res[i]+"','"+innerDiv.id+"');");
+			xmdiv.appendChild(innerDiv);
+
+		}
+	}
+}
+function play(src,xid){
+	var pl = document.getElementById('player');
+	pl.innerHTML="<video width='1000px' height='400px' controls='' autoplay='' name='media'><source src='"+src+"' type='video/mp4'></video>";
+	if(CURR != "")
+	//$(CURR).attr("style","background-image: url(images.jpg);");
+	//$(xid).attr("style","background-image: url(play.jpg);background-size:contain;");
+	
+	//document.getElementById(CURR).setAttribute("style","background-image: url(../images.jpg);");
+	//document.getElementById(xid).setAttribute("style","background-image: url(../play.jpg);background-size:contain;");
+
+
+	CURR=xid;
+}
+function expand(idx){
+	var w1= document.getElementById('content');
+	var d1 = document.getElementById('d1');
+	var div1 = document.getElementById('pic'+idx);
+	d1.innerHTML=div1.innerHTML;
+	d1.style.display='inline-table';
+	//d1.style.width='400px';
+	//d1.style.height='400px';
+	w1.style.opacity = '0.1';
+	d1.style.opacity ='1';
+
+}
+function ret(){
+	
+	var d1 = document.getElementById('d1');
+	var w1= document.getElementById('content');
+	w1.style.opacity = '1';
+	d1.style.display='none';
+
+}
+</script>
+</head>
+<body>
+<!--
+<div id="menu" style="
+position: fixed;
+background-color: rgb(255, 255, 255);
+width: 75px;
+height: 100px;
+opacity: 0.8;
+font-size: large;">
+
+<a href="#player" style="float:left;color: green;">music</a>
+<a href="#d1" style="float: right;color: green;">pics</a>
+</div>
+
+
+
+<div id='main' align='center'>
+<div id='player' style="width: 1000px; height:400px;">
+</div>
+
+<div id ='media' style="width: 1000px; height:130px;overflow: scroll;white-space: nowrap; overflow-y:hidden;">
+<div  id='m1'></div>
+</div>
+<div id="ddr" style="height: 50%;">
+</div>
+<div id='d1' style="width=300px;height=500px;" onclick='ret();'></div>
+
+<div id ='content' style="width: 1000px; height:500px;overflow: scroll;white-space: nowrap;">
+
+<div id='p1'></div>
+</div>
+<div id="ddr2" style="height: 50%;">
+</div>
+
+</div>
+-->
+<div id='list'>natalie_portman_37276.jpg<br>11873541_10207112695673665_679652630671010742_n.jpg<br>Screenshot from 2015-09-10 23:00:31.png<br>1391509_702419313212332_8206848944003406083_n.jpg<br>ee.html<br>main-thumb-67177697-200-bfkxmbqvclbrbwbghfbkigdfzmddkbqx.jpeg<br>main-thumb-67177697-200-jrhpsgfsddqndmzvysikzvtjyzrcarnh.jpeg<br>main-thumb-67177697-200-ahraenppyutdnazgoynvjaztzefuerkk.jpeg<br>556498_4274346344275_174552673_n.jpg<br>1005741_10201097266061181_1426658585_n.jpg<br>KQiB7oS.jpg<br>293844_303812286381651_1886295155_n.jpg<br>natalie_portman-1487026.jpg<br>main-thumb-67177697-200-pqlonamnpkvzfrhohmsldgqtkbrhcpyn.jpeg<br>301741_180115835442685_1341639782_n.jpg<br>11800204_10206660224131656_7812170342866203460_n.jpg<br>11826034_10206660236011953_6096761416957903732_n.jpg<br>10cd05647654275af8738b685fea3d17.jpeg<br>10426739_10207306508998877_1615729126523642958_n.jpg<br>11148697_515038451982973_8967034754453167437_n.jpg<br>main-thumb-55154831-200-lnfaagqcspgjoofojoinawsfkhzywazz.jpeg<br>New<br>11709661_505449092941909_8440276262506796853_n.jpg<br>63597_4891443211311_1527012265_n.jpg<br>DSC01616-1.jpg<br>12002211_520014038152081_865867999583564735_n.jpg<br>main-thumb-67177697-200-pzpwrlpkenadhkyasghzxdjosfyrhwlg.jpeg<br>piccredit-unitytriangle-org.jpg<br>natalie-portman-pretty-in-pink-20.jpg<br>New1<br>1016157_10202472975893067_141922635_n.jpg<br>logo.jpg<br>21.jpg<br>project-igi-ingame-01.mp3<br>Dota2_music_battle_001.mp3<br>Ananyas_electrifying_performance__Roz_Roz_Aankhon_Tale___Sony_Sab___Max.mp3<br>05 - Jiya Re(MyMp3Song.Com).mp3<br>project-igi-ingame-03 (1).mp3<br>Say_Na_Say_Na_-_Bluffmaster_(2005)_BollyWod_Movie_Hindi_Song.mp3<br>Daiyya Re Daiyya - Madhumati-Various--Raag.Me--.mp3<br>project-igi-ingame-03.mp3<br>O Re Chhori-A R Rahman--Raag.Me--.mp3<br>KESARIYA-HAI-ROOP-MARO.mp4<br>Indian_Idol_junior_2___EP_9_Ajay_Brijwasi_manages_to_give_a_fantastic_performance___Sony_Sab_&.mp3<br>project-igi-ingame-07.mp3<br>Dota2_music_ui_world_map.mp3<br>project-igi-ingame-08.mp3<br>Choodiyan_Khanak_Gayi_-_Song_-_Lamhe.mp3<br>Patakha Guddi Highway Full Video Song (Official) -- A.R Rahman - Alia Bhatt, Randeep Hooda.mp4<br>[Songs.PK] 01 - Queen - London Thumakda (1).mp3<br>05 - Roja Jaaneman(MyMp3Song.Com).mp3<br>project-igi-ingame-09.mp3<br>Supernatural - Rock You.mp3<br>Pud_laugh_05.mp3<br>Whiplash Best Movie Ending Ever.mp4<br>WAPWON.COM_Roz_Roz_ankho_tale_By_Ananya.mp4<br>project-igi-ingame-05.mp3<br>Highway Full Audio Song Patakha Guddi (Official) - A.R Rahman - Alia Bhatt, Randeep Hooda.mp4<br>02-opening.mp3<br>Chadh Gayo Papi Bichhua (Madhumati 1958)-Various--Raag.Me--.mp3<br>Bichua.mp3<br>Kinare-(Mr-Jatt.com).mp3<br>KESARIYA HAI ROOP MARO.mp3<br>Lion_laugh_04.mp3<br>project-igi-ingame-02.mp3<br>01-title.mp3<br>Gangnam Style - PSY(MyMp3Song.Com).mp3<br>Pud_laugh_03.mp3<br>8 Bit Instrumental-TMNT IV- Turtles In Time www.mp3freex.biz .mp3<br>project-igi-menu.mp3<br>MLG420EarthShaker.mp4<br>Hank Levy - Whiplash.mp3<br>Nithyashree_1_August_2015_Performance_-_Bol_Na_Halke_Halke_(Jhoom_Barabar_Jhoom).mp3<br>ananya_singing_morini.mp3<br>Tera Deedar Hua-Rahat Fateh Ali Khan[320]--Raag.Me--.mp3<br>Nithyashree indian idol junior (bolna halke halke) 01 08 15.mp4<br>Yaar Ko Hamne Ja Ba Ja Dekha-Abida Parveen--Raag.Me--.mp3<br>dendy-teenage-mutant-ninja-turtles-ii-the-arcade-game-main-theme.mp3<br>Juan Tizol and Duke Ellington - Caravan.mp3<br>Ananya_Sritam_Nanda_16th_August_2015_-_Kabhi_Neem_Neem_(Yuva).mp3<br></div></body></html>

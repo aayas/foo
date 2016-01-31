@@ -1,0 +1,14 @@
+/href=\"(.+?)\"/g.exec(document.body.innerHTML.match(/href=\"(.+?)\"/g)[i])[1]
+
+
+
+
+
+m=document.body.innerHTML.match(/href=\"(.+?)\"/g);
+//for(i=0;i<m.length;i++)console.log(/href=\"(.+?)\"/g.exec(m[i])[1])
+
+x=[];
+for(i=0;i<m.length;i++)x[i]=(/href=\"(.+?)\"/g.exec(m[i])[1]);
+document.body.innerHTML="";
+for(i=0;i<x.length;i++) document.body.innerHTML+="<div id='"+i+"'>"+x[i]+"</div>";
+
