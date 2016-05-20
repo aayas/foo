@@ -1,5 +1,5 @@
 first = function() {
-    xarr = [];
+    xarr = ['00:00:00'];
     yarr = [];
     tarr = [];
 
@@ -7,54 +7,41 @@ first = function() {
     //var lbl = document.getElementById("lbl");
     //txt.value = "";
 
-    var flag = false;
 
-    for (var i = 0; i < rows.length; i++)
+    for (var i = 1; i < rows.length; i++)
     //for (var i = 0; i < 100; i++) 
     {
 
         var xt, yt;
 
-        var rxt = /((.*)( --> ))/;
-        if (rows[i].match(rxt)) {
-            xt = rows[i].match(rxt)[1];
-            xt = xt.substring(0, xt.length - 9);
+        if (rows[i].match(/\d\d:\d\d:\d\d/g)) {
+            xt = rows[i].match(/\d\d:\d\d:\d\d/g)[1];
             //console.log(xt);
-            flag = true;
         }
 
-        var ryt = /(( --> )(.*))/;
-        if (rows[i].match(ryt)) {
-            yt = rows[i].match(ryt)[1];
-            yt = yt.substring(5, yt.length - 4);
+        if (rows[i].match(/\d\d:\d\d:\d\d/g)) {
+            yt = rows[i].match(/\d\d:\d\d:\d\d/g)[0];
             //console.log(yt);
         }
 
-        if (flag) {
+
             // txt.value += xt + '->' + yt + '\n';
             var st = "";
-            i++;
-            var rnxt = /(\d+)/;
-            while (i < rows.length && (rows[i].match(rnxt) == null)) {
-                // txt.value += rows[i] + '\n';
-                st += rows[i] + '\n';
-                i++;
-            }
+            st = rows[i].substr(13,rows[i].length-29);
 
             xarr.push(xt);
             yarr.push(yt);
             tarr.push(st);
 
-        }
+
     }
 };
 
 if(typeof rows === 'undefined') {
     person = prompt("copy paste content of ur subtitle file", "");
-    rows = person.split("\n");
+    rows = person.split(" --> ");
     first();
-    //document.getElementById('masthead-positioner').style.display='none';
-document.getElementById('page-container').style.zIndex='0';
+ document.getElementById('page-container').style.zIndex='0';
 document.getElementById('page-container').style.position = 'relative';
 if(document.getElementById('banner')===null)
 document.body.insertAdjacentHTML("afterBegin","<div id='banner' style='position:absolute;top:7%;width:100%;text-align:center;z-index:1;font-size:15px;  color: #9DD189;'></div>");
@@ -73,9 +60,9 @@ function bin_search(currtime, beg, end) {
         mid = parseInt((beg + end) / 2);
 
         //console.log(xarr[mid].toString()+"-"+yarr[mid].toString());
-        sx = getsec(xarr[mid]);
+        sx = getsec(xarr[mid-1]);
         sy = getsec(yarr[mid]);
-        secs = getsec(currtime);
+        secs = currtime;
         if (sx <= secs && sy >= secs) return mid;
         if (sx < secs && sy < secs) beg = mid;
         if (sx > secs && sy > secs) end = mid;
@@ -89,25 +76,34 @@ function bin_search(currtime, beg, end) {
 
 function getsec(st) {
     //console.log(st);
+    //if(!st) return 0;
     w = st.split(':');
+    if(w[0] < 0) // time remaining indicator case
+    {
+        MOVIETIME= 1 * 3600 + 49 * 60 + 5; // 1:49:05
+        return MOVIETIME + parseInt(w[0]) * 3600 + parseInt(w[1]) * 60 + parseInt(w[2]);
+    }
+
     if (w.length > 2) return parseInt(w[0]) * 3600 + parseInt(w[1]) * 60 + parseInt(w[2]);
     else return parseInt(w[0]) * 60 + parseInt(w[1]);
 }
-
-timer = document.querySelector('.ytp-time-current');
+var vidtimer = document.querySelector('.ytp-time-current'); 
 disp=document.getElementById('banner');
 funx = function() {
-    curr = timer.innerHTML;
+    
+    curr=getsec(vidtimer.innerHTML);
     res = bin_search(curr, 1, xarr.length);
     if (res > 0){
      //console.log(tarr[res]);
-    disp.innerHTML=tarr[res];
+    disp.innerHTML=tarr[res]; 
    }
-   else disp.innerHTML="";
+   else disp.innerHTML="....";
 };
 
+
+
 if(typeof refreshIntervalId !== 'undefined') clearInterval(refreshIntervalId);      
-refreshIntervalId = setInterval(funx, 3000);
+refreshIntervalId = setInterval(funx, 2000); // refresh every 2 sec
 
 
 
